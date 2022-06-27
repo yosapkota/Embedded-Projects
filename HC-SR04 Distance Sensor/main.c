@@ -19,12 +19,11 @@
 
 void PortB_Init(void);
 void PortF_Init(void);
-void Timer0Capture_Init(void);
 
 /*Timer to measure the pulse width and create delays*/
 void Timer0Capture_Init(void);
 int Timer0A_pulseWidthCapture(void);
-void timer0A_delayus(int );
+void timer1A_delayus(int);
 
 
 //void SystemInit(){}
@@ -32,25 +31,25 @@ int main(){
 	
 	int timerCountReturn = 0;
 	float pulseWidth = 0;
-  float distance = 0;
+  uint32_t distance = 0;
 	PortB_Init();
 	PortF_Init();
 	PLL_Init();
 	
-	//Timer0Capture_Init();
+	Timer0Capture_Init();
 	
 	while(1){
 		
 		BLUE ^= 0x04;
-		//timer0A_delayus(50000);
+		//timer1A_delayus(50000);
 		
 		//set the TRIG PIN LOW initially
-		//TRIG = 0;
+		TRIG = 0;
 		//wait for 1 ms;
-		timer0A_delayus(1000);
+		timer1A_delayus(1000);
 		//set the TRIG PIN HIGH for 10 us
 		TRIG = 0x20;
-		timer0A_delayus(10);  
+	  timer1A_delayus(10);  
 		TRIG = 0;
 		
 		/*set the TRIG PIN LOW to broadcast 8 cycle burst
@@ -59,7 +58,6 @@ int main(){
 	  timerCountReturn = Timer0A_pulseWidthCapture();
 		pulseWidth = timerCountReturn / 80000000;
 		distance = 3400 * (pulseWidth/2);
-
 	}
 	
 }
@@ -100,15 +98,15 @@ void PortB_Init(void){
 
 /* microsecond delay using one-shot mode */
 
-void timer0A_delayus(int time){
-	SYSCTL_RCGCTIMER_R |= 0x01 ;  // enable clock Timer Block 
-	TIMER0_CTL_R = 0; //disable timer before initializatiom
-	TIMER0_CFG_R = 0x00;  //32-bit timer mode
-	TIMER0_TAMR_R = 0x02; //periodic mode and down counter
-	TIMER0_TAILR_R = 80*time - 1; //timer A load value register
-	TIMER0_ICR_R = 0x01; // clear TimerA timeput flag
-	TIMER0_CTL_R = 0x01; //enable timer0A
-	while( (TIMER0_RIS_R & 0x1) == 0);   // wait for TimerA timeout flag to set
+void timer1A_delayus(int time){
+	SYSCTL_RCGCTIMER_R |= 0x02 ;  // enable clock Timer Block 
+	TIMER1_CTL_R = 0; //disable timer before initializatiom
+	TIMER1_CFG_R = 0x00;  //32-bit timer mode
+	TIMER1_TAMR_R = 0x01; //one shot mode and down counter
+	TIMER1_TAILR_R = 80*time - 1; //timer A load value register
+	TIMER1_ICR_R = 0x01; // clear TimerA timeput flag
+	TIMER1_CTL_R = 0x01; //enable timer1A
+	while( (TIMER1_RIS_R & 0x01) == 0);   // wait for TimerA timeout flag to set
 	
 
 }

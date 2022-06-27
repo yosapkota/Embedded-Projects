@@ -420,6 +420,11 @@
               <FileType>1</FileType>
               <FilePath>.\PLL.c</FilePath>
             </File>
+            <File>
+              <FileName>UART.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\UART.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
