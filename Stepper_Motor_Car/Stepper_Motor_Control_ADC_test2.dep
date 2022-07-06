@@ -1,0 +1,13 @@
+Dependencies for Project 'Stepper_Motor_Control', Target 'ADC_test2': (DO NOT MODIFY !)
+F (.\startup.s)(0x61844C6F)(--cpu Cortex-M4 --pd "__EVAL SETA 1" -g --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary--list .\startup.lst --xref -o .\startup.o --depend .\startup.d)
+F (.\ADC_test2_main.c)(0x62B8ED95)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\adc_test2_main.o --omf_browse .\adc_test2_main.crf --depend .\adc_test2_main.d)
+I (../tm4c123gh6pm.h)(0x6177341E)
+I (ADCSWTrigger.h)(0x62C4EEDC)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C86E14)
+I (PLL.h)(0x61844C6F)
+F (.\PLL.c)(0x61844C6F)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\pll.o --omf_browse .\pll.crf --depend .\pll.d)
+I (PLL.h)(0x61844C6F)
+F (.\ADCSWTrigger.c)(0x62C4EF5C)(-c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I.. -I..\..\..-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\Luminary-Drvmdk -DPART_LM4F120H5QR-o .\adcswtrigger.o --omf_browse .\adcswtrigger.crf --depend .\adcswtrigger.d)
+I (../tm4c123gh6pm.h)(0x6177341E)
+I (ADCSWTrigger.h)(0x62C4EEDC)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C86E14)
