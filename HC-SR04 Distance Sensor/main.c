@@ -30,7 +30,7 @@ void timer1A_delayus(int);
 int main(){
 	
 	int timerCountReturn = 0;
-	float pulseWidth = 0;
+	uint32_t pulseWidth = 0;
   uint32_t distance = 0;
 	PortB_Init();
 	PortF_Init();
@@ -45,8 +45,8 @@ int main(){
 		
 		//set the TRIG PIN LOW initially
 		TRIG = 0;
-		//wait for 1 ms;
-		timer1A_delayus(1000);
+		//wait for 60 ms;
+		timer1A_delayus(60000);
 		//set the TRIG PIN HIGH for 10 us
 		TRIG = 0x20;
 	  timer1A_delayus(10);  
@@ -56,10 +56,16 @@ int main(){
 		of ultrasound at 40KHz*/
 
 	  timerCountReturn = Timer0A_pulseWidthCapture();
-		pulseWidth = timerCountReturn / 80000000;
-		distance = 3400 * (pulseWidth/2);
+		//pulseWidth = timerCountReturn / 80000000;
+		distance = (timerCountReturn*0.034)/200;
 	}
 	
+	if(distance < 5)
+		RED ^= 0x02;
+	else if (distance > 5 && distance < 15)
+		GREEN ^= 0x08;
+	else
+		BLUE ^= 0x04;
 }
 
 /*PORTF Initialization*/
