@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "PLL.h"
+#include "UART.h"
 
 // Built-in RGB LEDs
 #define RED 	(*((volatile unsigned long *)0x40025008))
@@ -14,58 +15,56 @@
 #define SW2 (*((volatile unsigned long*) 0x40025004))
 
 // TRIG Pin
-#define TRIG (*((volatile unsigned long*) 0x40005080))
+#define PE1  (*((volatile unsigned long*) 0x40024008))
 
-
-void PortB_Init(void);
 void PortF_Init(void);
+void PortE_Init(void);
 
 /*Timer to measure the pulse width and create delays*/
 void Timer0Capture_Init(void);
 int Timer0A_pulseWidthCapture(void);
 void timer1A_delayus(int);
 
+  uint32_t timerCountReturn = 0;
+  uint32_t distance = 0;
 
 //void SystemInit(){}
 int main(){
 	
-	int timerCountReturn = 0;
-	uint32_t pulseWidth = 0;
-  uint32_t distance = 0;
-	PortB_Init();
+	
 	PortF_Init();
-	PLL_Init();
+	PortE_Init();
+	PLL_init();
 	
 	Timer0Capture_Init();
 	
 	while(1){
 		
-		BLUE ^= 0x04;
-		//timer1A_delayus(50000);
-		
 		//set the TRIG PIN LOW initially
-		TRIG = 0;
+		PE1 = 0x00;
 		//wait for 60 ms;
 		timer1A_delayus(60000);
+		
 		//set the TRIG PIN HIGH for 10 us
-		TRIG = 0x20;
+		PE1 = 0x02;
+		
 	  timer1A_delayus(10);  
-		TRIG = 0;
+		PE1 = 0x00;
 		
 		/*set the TRIG PIN LOW to broadcast 8 cycle burst
 		of ultrasound at 40KHz*/
 
 	  timerCountReturn = Timer0A_pulseWidthCapture();
-		//pulseWidth = timerCountReturn / 80000000;
-		distance = (timerCountReturn*0.034)/200;
+		distance = (timerCountReturn*0.034)/200;  
+		
+		
+		/* test the return value */
+		if(distance < 10)
+			BLUE ^= 0x04;
+		else
+			RED ^= 0x02;
 	}
 	
-	if(distance < 5)
-		RED ^= 0x02;
-	else if (distance > 5 && distance < 15)
-		GREEN ^= 0x08;
-	else
-		BLUE ^= 0x04;
 }
 
 /*PORTF Initialization*/
@@ -84,23 +83,7 @@ void PortF_Init(void){
 	GPIO_PORTF_PUR_R = 0x11;     					// 8) enable pullup resistors on PF4,PF0  
 }
 
-/*PORTB Initialization*/
-void PortB_Init(void){
-	volatile unsigned long delay; 
-  SYSCTL_RCGC2_R |= 0x02;      					// 1) PORT B
-  delay = SYSCTL_RCGC2_R;      					// 2) no need to unlock 
-	GPIO_PORTB_AMSEL_R &= ~0x3F;          // 3) disable analog function on PB5-0 
-  GPIO_PORTB_PCTL_R &= ~0x00FFFFFF;     // 4) enable regular GPIO 
-	
-	GPIO_PORTB_DIR_R &= ~0x40;            /* 5) PB6 input for ECHO */
-  GPIO_PORTB_DIR_R |= 0x20;        
-	
-  GPIO_PORTB_AFSEL_R &= ~0x20;          // 6) regular function on PB5
-	GPIO_PORTB_AFSEL_R |= 0x40;          //  enable alternate function on PB6
-	
-  GPIO_PORTB_DEN_R |= 0x60;             // 7) enable digital on PB5
-	 
-}
+
 
 /* microsecond delay using one-shot mode */
 
@@ -116,6 +99,8 @@ void timer1A_delayus(int time){
 	
 
 }
+
+/* Initialize the Timer0A for edge capture mode*/
 
 void Timer0Capture_Init(void){
 	SYSCTL_RCGCTIMER_R |= 0x01 ;  // enable clock Timer Block 0
@@ -153,5 +138,16 @@ int Timer0A_pulseWidthCapture(void) {
 	fallingEdge = TIMER0_TAR_R;
 	
 	return (fallingEdge - risingEdge) & 0x00FFFFFF; //return the time difference
+}
+
+// Init PortE
+void PortE_Init(void){
+	int delay;
+  SYSCTL_RCGC2_R |= 0x10;           // Port E clock
+  delay = SYSCTL_RCGC2_R;           // wait 3-5 bus cycles
+  GPIO_PORTE_DIR_R |= 0x02;         // PE1 output
+  GPIO_PORTE_AFSEL_R &= ~0x02;      // not alternative
+  GPIO_PORTE_AMSEL_R &= ~0x02;      // no analog
+  GPIO_PORTE_DEN_R |= 0x02;         // enable PE1
 }
 
