@@ -3,46 +3,73 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
-C:\Keil\Labware\Lab5_FunctionsInC - Copy\DHT11.uvproj
-Project File Date:  07/09/2022
+C:\Users\sapko\Downloads\Embedded Projects\DHT11\DHT11.uvproj
+Project File Date:  07/10/2022
 
 <h2>Output:</h2>
 Build target 'DHT11'
+compiling main.c...
 linking...
-Program Size: Code=2608 RO-data=776 RW-data=80 ZI-data=1656  
+Program Size: Code=2660 RO-data=776 RW-data=48 ZI-data=1656  
 ".\DHT11.axf" - 0 Error(s), 0 Warning(s).
-Load "C:\\Keil\\Labware\\Lab5_FunctionsInC - Copy\\DHT11.axf" 
-Connecting: Mode=JTAG, Speed=1000000Hz
-Erase Done.
-Programming Done.
-Verify OK.
 </pre>
 </body>
 </html>
-y\\DHT11.axf" 
+wnloads\\Embedded Projects\\DHT11\\DHT11.axf" 
 Connecting: Mode=JTAG, Speed=1000000Hz
 Erase Done.
 Programming Done.
 Verify OK.
-), 1 Warning(s).
+but never referenced
+        int d,i,j, pulseWidth;
+main.c(39): warning:  #177-D: variable "pulseWidth" was declared but never referenced
+        int d,i,j, pulseWidth;
+main.c: 4 warnings, 0 errors
+linking...
+Program Size: Code=2584 RO-data=776 RW-data=48 ZI-data=1656  
+".\DHT11.axf" - 0 Error(s), 4 Warning(s).
+Load "C:\\Users\\sapko\\Downloads\\Embedded Projects\\DHT11\\DHT11.axf" 
+Connecting: Mode=JTAG, Speed=1000000Hz
+Erase Done.
+Programming Done.
+Verify OK.
+n.c(80): error:  #20: identifier "GPIO_PORTF_PCTL_R" is undefined
+    GPIO_PORTF_PCTL_R = 0x00000000;   // 4) GPIO clear bit PCTL  
+main.c(81): error:  #20: identifier "GPIO_PORTF_DIR_R" is undefined
+    GPIO_PORTF_DIR_R = 0x0E;          // 5) PF4,PF0 input, PF3,PF2,PF1 output   
+main.c(82): error:  #20: identifier "GPIO_PORTF_AFSEL_R" is undefined
+    GPIO_PORTF_AFSEL_R = 0x00;        // 6) no alternate function
+main.c(83): error:  #20: identifier "GPIO_PORTF_PUR_R" is undefined
+    GPIO_PORTF_PUR_R = 0x11;          // enable pullup resistors on PF4,PF0       
+main.c(84): error:  #20: identifier "GPIO_PORTF_DEN_R" is undefined
+    GPIO_PORTF_DEN_R = 0x1F;          // 7) enable digital pins PF4-PF0        
+main.c(91): error:  #20: identifier "SYSCTL_RCGCTIMER_R" is undefined
+        SYSCTL_RCGCTIMER_R |= 0x02 ;  // enable clock Timer Block 
+main.c(92): error:  #20: identifier "TIMER1_CTL_R" is undefined
+        TIMER1_CTL_R = 0; //disable timer before initializatiom
+main.c(93): error:  #20: identifier "TIMER1_CFG_R" is undefined
+        TIMER1_CFG_R = 0x00;  //32-bit timer mode
+main.c(94): error:  #20: identifier "TIMER1_TAMR_R" is undefined
+        TIMER1_TAMR_R = 0x01; //one shot mode and down counter
+main.c(95): error:  #20: identifier "TIMER1_TAILR_R" is undefined
+        TIMER1_TAILR_R = 80*time - 1; //timer A load value register
+main.c(96): error:  #20: identifier "TIMER1_ICR_R" is undefined
+        TIMER1_ICR_R = 0x01; // clear TimerA timeput flag
+main.c(98): error:  #20: identifier "TIMER1_RIS_R" is undefined
+        while( (TIMER1_RIS_R & 0x01) == 0);   // wait for TimerA timeout flag to set
+main.c(108): error:  #20: identifier "SYSCTL_RCGC2_R" is undefined
+        SYSCTL_RCGC2_R |= 0x10;           // Port E clock
+main.c(110): error:  #20: identifier "GPIO_PORTE_DIR_R" is undefined
+    GPIO_PORTE_DIR_R |= 0x02;         // PE1 output
+main.c(111): error:  #20: identifier "GPIO_PORTE_AFSEL_R" is undefined
+    GPIO_PORTE_AFSEL_R &= ~0x02;      // not alternative
+main.c(112): error:  #20: identifier "GPIO_PORTE_AMSEL_R" is undefined
+    GPIO_PORTE_AMSEL_R &= ~0x02;      // no analog
+main.c(113): error:  #20: identifier "GPIO_PORTE_DEN_R" is undefined
+    GPIO_PORTE_DEN_R |= 0x02;         // enable PE1
+main.c(150): warning:  #1-D: last line of file ends without a newline
+  }
+main.c: 1 warning, 22 errors
+compiling PLL.c...
+".\DHT11.axf" - 22 Error(s), 1 Warning(s).
 Target not created
-ata=776 RW-data=48 ZI-data=1656  
-".\DHT11.axf" - 0 Error(s), 3 Warning(s).
-Load "C:\\Keil\\Labware\\Lab5_FunctionsInC - Copy\\DHT11.axf" 
-Connecting: Mode=JTAG, Speed=1000000Hz
-Erase Done.
-Programming Done.
-Verify OK.
-Load "C:\\Keil\\Labware\\Lab5_FunctionsInC - Copy\\DHT11.axf" 
-Connecting: Mode=JTAG, Speed=1000000Hz
-Erase Done.
-Programming Done.
-Verify OK.
-Done.
-Programming Done.
-Verify OK.
-Load "C:\\Keil\\Labware\\Lab5_FunctionsInC - Copy\\DHT11.axf" 
-Connecting: Mode=JTAG, Speed=1000000Hz
-Erase Done.
-Programming Done.
-Verify OK.

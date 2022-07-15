@@ -18,25 +18,24 @@
 
 // define input/output pin
 #define PE1                     (*((volatile unsigned long *)0x40024008))
-// threshold for LOW value < 26 ms
-#define LOW 26
 
-int humid = 0, temp = 0;
-uint8_t data[5] = {0,0,0,0,0};
-uint8_t checkSum = 0;
-int d,i,j, pulseWidth;
+// threshold for LOW value for pulseWidth < 26 us
+#define LOW_PULSE 26
 
 
 void PortF_Init(void);
 void startPulse(void);
-void checkResponse(void);
-void readBits(void);
 
 //delay using timer1A to determine LOW/HIGH bit
 void timer1A_delayus(int time);
 
 // ***** 3. Subroutines Section *****
 int main (void) {
+	
+	int humid = 0, temp = 0;
+	uint8_t data[5] = {0,0,0,0,0};
+	uint8_t checkSum = 0;
+	int d,i,j, pulseWidth;
 
 	PortF_Init();
 	PLL_init();
@@ -44,29 +43,48 @@ int main (void) {
 
   while(1) {
 		RED ^= 0x02;
-		for(i=0; i < 10; i++){
-			printf("%d\n",i);
-			timer1A_delayus(50000);
-		}
+		startPulse(); 
 		
-		startPulse();
-		//checkResponse();
+/* wait for two pulses before reading pulse stream */
+      while (PE1 == 0x02);
+      while (PE1 == 0);
+      while (PE1 == 0x02);	
 		
 		/* start reading data */
-		//readBits();
-		
-		//prints if data is read correctly	
-		
+		for(d = 0; d < 5; d++){        // 5 bytes of data
+		for (i = 0; i < 8; i++){   // reading each bits
+			  do { timer1A_delayus(1); }
+        while (PE1 == 0);
+			  pulseWidth = 0;
+				
+				do{
+					pulseWidth++;
+					timer1A_delayus(1);
+				} while (PE1 == 0x02);
+				
+				data[d] = data[d] | (( pulseWidth > LOW_PULSE) << (7-i));
+		}
+	}
+	
 	for (j= 0; j < 4; j++){
 		checkSum += data[j];
 	}
+	
+	humid = data[0];
+	temp = data[2];
+	
+//	printf("Temp      : %d \n", temp);
+//  printf("Humidity  : %d \n", humid);
+	
 	if(checkSum == data[4]){
 		printf("Temp      : %d \n", temp);
 		printf("Humidity  : %d \n", humid);
   }
 	else
 		printf("Error \n");
+	 timer1A_delayus(2000000);
 }
+	
 	}
 
 /*PORTF Initialization*/
@@ -119,32 +137,5 @@ void startPulse(void){
 	GPIO_PORTE_DIR_R &= ~0x02;        // PE1 input
 }
 
-/* check response from DHT11 before reading bits */
-
-void checkResponse(void) {
-	//while (PE1 == 0x02){};
-	while (PE1 == 0) {};
-	while (PE1 == 0x02) {};
-}
 
 
-void readBits(void){
-for(d = 0; d < 5; d++){        // 5 bytes of data
-		for (i = 0; i < 8; i++){   // reading each bits
-				while (PE1 == 0){};
-			  pulseWidth = 0;
-				do {
-					pulseWidth++;
-					timer1A_delayus(1);
-					if(pulseWidth > 1000)   //data invalid
-						break;
-				} while (PE1 == 0x02);
-				
-				data[d] = data[d] | (( pulseWidth > LOW) << (7-i));
-		}
-	}
-	
-	humid = data[0];
-	temp = data[2];
-
-}
